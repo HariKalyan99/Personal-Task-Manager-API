@@ -7,7 +7,6 @@ const catchAsync = require("../middlewares/catchAsync");
 
 const getAllTask = catchAsync(async (request, response, next) => {
     const result = await task.findAll({include: user});
-
     return response.status(201).json({
         status: 'success',
         data: result
@@ -15,14 +14,51 @@ const getAllTask = catchAsync(async (request, response, next) => {
 })
 
 const getTaskById = catchAsync(async (request, response, next) => {
+    const existingUserId = request.user.id;
     const projectId = request.params.id
-    const result = await task.findByPk(projectId, {include: user});
+    const result = await task.findOne({where: {id: projectId, userId: existingUserId}});
     if(!result){
         return next(new AppError('Invalid project id', 400))
     }
     return response.status(201).json({
         status: 'success',
         data: result
+    })
+})
+
+const updateTaskById = catchAsync(async (request, response, next) => {
+    const existingUserId = request.user.id;
+    const projectId = request.params.id;
+    const body = request.body;
+    const result = await task.findOne({where: {id: projectId, userId: existingUserId}});
+    if(!result){
+        return next(new AppError('Invalid project id', 400))
+    }
+    result.title = body.title;
+    result.description = body.description;
+    result.priority = body.priority;
+    result.dueDate = body.dueDate;
+    result.status = body.status;
+    result.userId = body.userId;
+    const updatedResult = await result.save();
+    return response.status(201).json({
+        status: 'success',
+        data: updatedResult
+    })
+})
+
+const deleteTaskById = catchAsync(async (request, response, next) => {
+    const existingUserId = request.user.id;
+    const projectId = request.params.id;
+    const result = await task.findOne({where: {id: projectId, userId: existingUserId}});
+    if(!result){
+        return next(new AppError('Invalid project id', 400))
+    }
+    
+    await result.destroy();
+    return response.status(201).json({
+        status: 'success',
+        data: "Task deleted successfully"
     })
 })
 
@@ -38,4 +74,4 @@ const createTask = catchAsync(async (request, response, next) => {
     })
 })
 
-module.exports = {createTask, getAllTask, getTaskById};
+module.exports = {createTask, getAllTask, getTaskById, updateTaskById, deleteTaskById};
