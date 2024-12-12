@@ -1,3 +1,5 @@
+const AppError = require("../middlewares/appError");
+
 const sendErrorDev =  (error, response) => {
     const statusCode = error.statusCode || 500;
     const status = error.status || 'error';
@@ -26,6 +28,15 @@ const sendErrorProd =  (error, response) => {
 }
 
 const globalErrorHandler = (error, request, response, next) => {
+    if(error.name === "JsonWebTokenError"){
+        error = new AppError('Invalid token', 401)
+    }
+    if(error.name === "SequelizeUniqueConstraintError"){
+        error = new AppError(error.errors[0].message, 400)
+    }
+    if(error.name === "SequelizeValidationtError"){
+        error = new AppError(error.errors[0].message, 400)
+    }
     if(process.env.NODE_ENV === 'development'){
         return sendErrorDev(error, response);
     }

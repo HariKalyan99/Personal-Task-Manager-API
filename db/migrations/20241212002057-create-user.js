@@ -12,31 +12,31 @@ module.exports = {
       username: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: true
+        allowNull: false
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       email: {
         type: Sequelize.STRING,
         unique: true,
-        allowNull: true
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       },
       updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       },
       deletedAt: {
         type: Sequelize.DATE
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface, _) {
     await queryInterface.dropTable('user');
   }
 };
