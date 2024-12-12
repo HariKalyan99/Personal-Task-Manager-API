@@ -1,6 +1,8 @@
 const user = require("../db/models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const catchAsync = require("../middlewares/catchAsync");
+const AppError = require("../middlewares/appError");
 
 const generateToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -8,7 +10,7 @@ const generateToken = (payload) => {
   });
 };
 
-const signUp = async (request, response) => {
+const signUp = catchAsync(async (request, response, next) => {
   const { username, email, password, confirmPassword } = request.body;
 
   const newUser = await user.create({
@@ -18,6 +20,10 @@ const signUp = async (request, response) => {
     confirmPassword,
   });
 
+  if (!newUser) {
+    return next(new AppError("Failed to create user", 400));
+  }
+
   const result = newUser.toJSON();
   delete result.password;
   delete result.deletedAt;
@@ -26,39 +32,28 @@ const signUp = async (request, response) => {
     id: result.id,
   });
 
-  if (!result) {
-    return response.status(400).json({
-      status: "Failed",
-      message: "Failed to create user",
-    });
-  } else {
-    return response.status(201).json({ status: "Success", data: result });
-  }
-};
+  return response.status(201).json({ status: "Success", data: result });
+});
 
-const login = async (request, response) => {
-  const { email, password, confirmPassword } = request.body;
+const login = catchAsync(async (request, response, next) => {
+  const { email, password} = request.body;
 
-  if (!email || !password || !confirmPassword) {
-    return response.status(400).json({
-      status: "Failed",
-      message: "Please provide email, password, confirm password",
-    });
+  if (!email || !password) {
+    return next(
+      new AppError("Please provide email, password, confirm password", 400)
+    );
   }
 
   const result = await user.findOne({ where: { email } });
 
   if (!result || !(await bcrypt.compare(password, result.password))) {
-    return response.status(400).json({
-      status: "Failed",
-      message: "Invalid credentials",
-    });
+    return next(new AppError("Invalid credentials", 400));
   } else {
     const token = generateToken({
       id: result.id,
     });
     return response.status(201).json({ status: "Logged in", token });
   }
-};
+});
 
 module.exports = { signUp, login };
