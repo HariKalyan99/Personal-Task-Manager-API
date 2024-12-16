@@ -10,6 +10,7 @@ const config = {
     port: process.env.DB_PORT,
     dialect: "postgres",
     seederStorage: "sequelize",
+    seederStorage: "sequelize",
   },
   PORT: process.env.DB_PORT,
   JWT_SECRET: process.env.JWT_SECRET,
