@@ -38,8 +38,8 @@ const signUp = catchAsync(async (request, response, next) => {
   }
 
   const result = newUser.toJSON();
-  delete result.password;
   delete result.deletedAt;
+  delete result.password;
 
   result.token = generateToken({
     id: result.id,
