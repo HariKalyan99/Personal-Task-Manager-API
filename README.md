@@ -35,7 +35,7 @@ cd Personal-Task-Manager-API
 npm install
 
 
-.env
+# .env
 
 APP_PORT=""
 NODE_ENV=""
@@ -57,4 +57,4 @@ npx sequelize-cli db:migrate
 
 npm start
 
-enjoy!!!!
+enjoy!!!
