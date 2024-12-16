@@ -1,4 +1,4 @@
-export const dotenv = require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config({ path: `${process.cwd()}/.env` });
 
 const config = {
@@ -19,4 +19,4 @@ const config = {
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
 };
 
-export default config;
+module.exports = config;
