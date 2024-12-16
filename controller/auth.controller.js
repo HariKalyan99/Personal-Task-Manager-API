@@ -1,10 +1,11 @@
-const user = require("../db/models/user");
+const user = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const catchAsync = require("../middlewares/catchAsync");
 const AppError = require("../middlewares/appError");
 const { default: config } = require("../config/config");
-
+const Auth = require('../services/auth.services');
+const {userSignup, userLogin} = new Auth();
 const generateToken = (payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
@@ -26,7 +27,7 @@ const signUp = catchAsync(async (request, response, next) => {
 
   const hashedPassword = bcrypt.hashSync(password, 10);
 
-  const newUser = await user.create({
+  const newUser = await userSignup({
     username,
     email,
     password: hashedPassword,
@@ -57,7 +58,7 @@ const login = catchAsync(async (request, response, next) => {
     );
   }
 
-  const result = await user.findOne({ where: { email } });
+  const result = await userLogin(email);
   const isVerifiedpasssword = await bcrypt.compare(password, result.password);
 
   if (!result || !isVerifiedpasssword) {
