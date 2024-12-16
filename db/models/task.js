@@ -5,7 +5,6 @@ const {
 } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../../config/database');
-const AppError = require('../../middlewares/appError');
 
 module.exports = sequelize.define('task',  {
   id: {
