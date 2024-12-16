@@ -1,7 +1,7 @@
-const dotenv = require("dotenv");
-dotenv.config({path: `${process.cwd()}/.env`})
+export const dotenv = require("dotenv");
+dotenv.config({ path: `${process.cwd()}/.env` });
 
-module.exports = {
+const config = {
   development: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
@@ -9,20 +9,14 @@ module.exports = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: "postgres",
-    seederStorage: 'sequelize',
+    seederStorage: "sequelize",
   },
-  test: {
-    username: "root",
-    password: null,
-    database: "database_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
-  },
-  production: {
-    username: "root",
-    password: null,
-    database: "database_production",
-    host: "127.0.0.1",
-    dialect: "mysql",
-  },
+  PORT: process.env.DB_PORT,
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+  NODE_ENV: process.env.NODE_ENV,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
 };
+
+export default config;

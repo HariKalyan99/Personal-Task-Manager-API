@@ -20,7 +20,7 @@ module.exports = sequelize.define('task',  {
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
+    allowNull: true,
   },
   priority: {
     type: DataTypes.ENUM('low','medium', 'high'),

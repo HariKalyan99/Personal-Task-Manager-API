@@ -3,9 +3,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const catchAsync = require("../middlewares/catchAsync");
 const AppError = require("../middlewares/appError");
+const { default: config } = require("../config/config");
 
+
+
+// env formatting via config
 const generateToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
@@ -13,10 +17,20 @@ const generateToken = (payload) => {
 const signUp = catchAsync(async (request, response, next) => {
   const { username, email, password, confirmPassword } = request.body;
 
+  if (this.password.length < 7) {
+    return next(new AppError("Password length must be greater than 7", 400));
+  }
+
+  if (password !== confirmPassword) {
+    return next(new AppError("Password and confirm password must be the same", 400));
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
   const newUser = await user.create({
     username,
     email,
-    password,
+    password: hashedPassword,
     confirmPassword,
   });
 
@@ -56,28 +70,6 @@ const login = catchAsync(async (request, response, next) => {
   }
 });
 
-const authentication = catchAsync(async (request, _, next) => {
-  let idToken = "";
-  if (
-    request.headers.authorization &&
-    request.headers.authorization.startsWith("Bearer")
-  ) {
-    idToken = request.headers.authorization.split(" ")[1];
-  }
 
-  if (!idToken) {
-    return next(new AppError("Please log in get access", 401));
-  }
-
-  const tokenDetail = jwt.verify(idToken, process.env.JWT_SECRET);
-
-  const userExist = await user.findByPk(tokenDetail.id);
-
-  if (!userExist) {
-    return next(new AppError("User no longer exists", 400));
-  }
-  request.user = userExist;
-  return next();
-});
 
 module.exports = { signUp, login, authentication };

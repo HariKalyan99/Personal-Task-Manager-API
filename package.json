@@ -1,7 +1,7 @@
 {
-  "name": "api",
+  "name": "personal-api-manager",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Task Management API built with Node.js, Express, and Sequelize ORM for handling tasks with the ability to filter by priority, due date, and status",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
