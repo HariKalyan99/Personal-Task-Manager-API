@@ -7,10 +7,9 @@ const { default: config } = require("../config/config");
 
 
 
-// env formatting via config
 const generateToken = (payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: config.JWT_EXPIRES_IN,
   });
 };
 
@@ -59,8 +58,9 @@ const login = catchAsync(async (request, response, next) => {
   }
 
   const result = await user.findOne({ where: { email } });
+  const isVerifiedpasssword = await bcrypt.compare(password, result.password);
 
-  if (!result || !(await bcrypt.compare(password, result.password))) {
+  if (!result || !isVerifiedpasssword) {
     return next(new AppError("Invalid credentials", 400));
   } else {
     const token = generateToken({
