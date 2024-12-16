@@ -5,8 +5,6 @@ const catchAsync = require("../middlewares/catchAsync");
 const AppError = require("../middlewares/appError");
 const { default: config } = require("../config/config");
 
-
-
 const generateToken = (payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
@@ -21,7 +19,9 @@ const signUp = catchAsync(async (request, response, next) => {
   }
 
   if (password !== confirmPassword) {
-    return next(new AppError("Password and confirm password must be the same", 400));
+    return next(
+      new AppError("Password and confirm password must be the same", 400)
+    );
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -69,7 +69,5 @@ const login = catchAsync(async (request, response, next) => {
     return response.status(201).json({ status: "Logged in", token });
   }
 });
-
-
 
 module.exports = { signUp, login, authentication };
