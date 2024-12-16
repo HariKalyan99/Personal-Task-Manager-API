@@ -15,7 +15,6 @@ class Auth {
   userLogin = async (email) => {
     try {
       const result = await user.findOne({ where: { email } });
-
       return result;
     } catch (error) {
       throw error;

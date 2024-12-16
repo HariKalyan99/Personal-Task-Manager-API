@@ -1,7 +1,7 @@
-const task = require("../db/models/task");
-const user = require("../db/models/user");
 const AppError = require("../middlewares/appError");
 const catchAsync = require("../middlewares/catchAsync");
+const Task = require('../services/task.services');
+const {allTasks, taskById, editTask} = new Task();
 
 const getAllTask = catchAsync(async (request, response, _) => {
   const { priority, startDate, endDate, status } = request.query;
@@ -25,7 +25,7 @@ const getAllTask = catchAsync(async (request, response, _) => {
       filter.dueDate.$lte = new Date(endDate);
     }
   }
-  const result = await task.findAll({ where: filter, include: user });
+  const result = await allTasks(filter);
   return response.status(201).json({
     status: "success",
     data: result,
@@ -35,9 +35,7 @@ const getAllTask = catchAsync(async (request, response, _) => {
 const getTaskById = catchAsync(async (request, response, next) => {
   const existingUserId = request.user.id;
   const projectId = request.params.id;
-  const result = await task.findOne({
-    where: { id: projectId, userId: existingUserId },
-  });
+  const result = await taskById(projectId, existingUserId);
   if (!result) {
     return next(new AppError("Invalid project id", 400));
   }
@@ -51,9 +49,7 @@ const updateTaskById = catchAsync(async (request, response, next) => {
   const existingUserId = request.user.id;
   const projectId = request.params.id;
   const body = request.body;
-  const result = await task.findOne({
-    where: { id: projectId, userId: existingUserId },
-  });
+  const result = await editTask(projectId, existingUserId);
   if (!result) {
     return next(new AppError("Invalid project id", 400));
   }
@@ -73,9 +69,7 @@ const updateTaskById = catchAsync(async (request, response, next) => {
 const deleteTaskById = catchAsync(async (request, response, next) => {
   const existingUserId = request.user.id;
   const projectId = request.params.id;
-  const result = await task.findOne({
-    where: { id: projectId, userId: existingUserId },
-  });
+  const result = await deleteTask(projectId, existingUserId);
   if (!result) {
     return next(new AppError("Invalid project id", 400));
   }
@@ -89,10 +83,8 @@ const deleteTaskById = catchAsync(async (request, response, next) => {
 
 const createTask = catchAsync(async (request, response, _) => {
   const existingUserId = request.user.id;
-  const newTask = await task.create({
-    ...request.body,
-    userId: existingUserId,
-  });
+  const newTask = await createTask({
+    ...request.body}, existingUserId);
 
   return response.status(201).json({
     status: "success",
