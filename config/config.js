@@ -11,7 +11,7 @@ const config = {
     dialect: process.env.DB_DIALECT || "postgres",
     seederStorage: "sequelize",
   },
-  PORT: process.env.DB_PORT,
+  PORT: process.env.APP_PORT,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   NODE_ENV: process.env.NODE_ENV,

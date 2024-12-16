@@ -5,9 +5,11 @@ const catchAsync = require("./middlewares/catchAsync");
 const AppError = require("./middlewares/appError");
 const globalErrorHandler = require("./controller/errorController");
 const sequelize = require("./connection/database");
-const { default: config } = require("./config/config");
+const config  = require("./config/config");
+
 
 const app = express();
+const PORT = config.PORT;
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/", taskRouter);

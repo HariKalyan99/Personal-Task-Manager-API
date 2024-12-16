@@ -70,4 +70,4 @@ const login = catchAsync(async (request, response, next) => {
   }
 });
 
-module.exports = { signUp, login, authentication };
+module.exports = { signUp, login };

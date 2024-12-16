@@ -17,7 +17,6 @@ class Task {
         where: { id: projectId, userId: existingUserId },
       });
       return result;
-      return result;
     } catch (error) {
       throw error;
     }
@@ -34,7 +33,6 @@ class Task {
     }
   };
 
-
   deleteTask = async (projectId, existingUserId) => {
     try {
       const result = await task.findOne({
@@ -46,8 +44,7 @@ class Task {
     }
   };
 
-
-  createTask = async (body, existingUserId) => {
+  addNewTask = async (body, existingUserId) => {
     try {
       const result = await task.create({
         ...body,
@@ -58,8 +55,6 @@ class Task {
       throw error;
     }
   };
-
- 
 }
 
 module.exports = Task;
