@@ -1,7 +1,6 @@
 "use strict";
 
 const { DataTypes } = require("sequelize");
-const bcrypt = require("bcrypt");
 const sequelize = require("../../config/database");
 const task = require("./task");
 
