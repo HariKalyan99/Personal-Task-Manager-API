@@ -8,7 +8,7 @@ const config = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "postgres",
+    dialect: process.env.DB_DIALECT,
     dialectOptions: {
       ssl: {
         require: true,   
