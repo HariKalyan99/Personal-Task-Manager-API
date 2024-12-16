@@ -28,8 +28,8 @@ const signUp = catchAsync(async (request, response, next) => {
 
   const newUser = await user.create({
     username,
-    password: hashedPassword,
     email,
+    password: hashedPassword,
     confirmPassword,
   });
 
