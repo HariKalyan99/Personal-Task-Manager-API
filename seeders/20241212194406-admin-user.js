@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt');
 const { default: config } = require('../config/config');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: (queryInterface, _) => {
     let password = config.ADMIN_PASSWORD;
-    const hashedPassowrd = bcrypt.hashSync(password, 10)
+    const hashedPassword = bcrypt.hashSync(password, 10);
     return queryInterface.bulkInsert('user', [
       {
         username: 'admin',
         email: config.ADMIN_EMAIL,
-        password: hashedPassowrd,
+        password: hashedPassword,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

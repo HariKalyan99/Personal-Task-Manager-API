@@ -96,7 +96,7 @@ const createTask = catchAsync(async (request, response, _) => {
 
   return response.status(201).json({
     status: "success",
-    data: newTask,
+    data: newTask,s
   });
 });
 

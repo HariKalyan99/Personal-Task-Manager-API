@@ -3,7 +3,6 @@
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 const sequelize = require("../../config/database");
-const AppError = require("../../middlewares/appError");
 const task = require("./task");
 
 const user = sequelize.define(

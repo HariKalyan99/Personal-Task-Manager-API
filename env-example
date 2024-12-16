@@ -2,16 +2,16 @@ APP_PORT=8081
 NODE_ENV=development
 
 # DB Credtentials
-DB_USERNAME=postgres
-DB_PASSWORD=root
-DB_DATABASE=task_db
-DB_HOST=localhost
+DB_USERNAME=user_name
+DB_PASSWORD=pwd
+DB_DATABASE=db_name
+DB_HOST=host_name
 DB_PORT=5432
 
 #jwt 
-JWT_SECRET=CWvPUr0LXJvY157+5ekGY8gphp0o0b3qW+6jmRBZq1Q=
-JWT_EXPIRES_IN=10d
+JWT_SECRET=ud8endsa-0dasdasd-30dsakd=
+JWT_EXPIRES_IN=5d
 
 # admin info
-ADMIN_EMAIL='admin@gmail.com'
-ADMIN_PASSWORD='admin12345'
+ADMIN_EMAIL='xxxx@xxxx.com'
+ADMIN_PASSWORD='xxxxxxxx'
