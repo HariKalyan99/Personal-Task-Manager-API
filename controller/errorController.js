@@ -1,3 +1,4 @@
+const config = require("../config/config");
 const AppError = require("../middlewares/appError");
 
 const sendErrorDev =  (error, response) => {
@@ -37,7 +38,7 @@ const globalErrorHandler = (error, request, response, next) => {
     if(error.name === "SequelizeValidationtError"){
         error = new AppError(error.errors[0].message, 400)
     }
-    if(process.env.NODE_ENV === 'development'){
+    if(config.NODE_ENV === 'development'){
         return sendErrorDev(error, response);
     }
 

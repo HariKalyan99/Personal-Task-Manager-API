@@ -6,6 +6,14 @@ const {
   updateTaskById,
   deleteTaskById,
 } = require("../controller/taskController");
+const { authentication } = require("../controller/auth.controler");
+const {
+  createTask,
+  getAllTask,
+  getTaskById,
+  updateTaskById,
+  deleteTaskById,
+} = require("../controller/taskController");
 const authentication = require("../middlewares/auth.middlewares");
 const router = express.Router();
 

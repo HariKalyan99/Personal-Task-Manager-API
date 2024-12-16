@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const catchAsync = require("../middlewares/catchAsync");
 const AppError = require("../middlewares/appError");
-const { default: config } = require("../config/config");
-const Auth = require('../services/auth.services');
-const {userSignup, userLogin} = new Auth();
+const config = require("../config/config");
+const Auth = require("../services/auth.services");
+const { userSignup, userLogin } = new Auth();
 const generateToken = (payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
