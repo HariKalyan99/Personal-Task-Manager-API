@@ -10,6 +10,14 @@ const config = {
     port: process.env.DB_PORT,
     dialect: "postgres",
     seederStorage: "sequelize",
+    migrationStorageTableName: "sequelize_meta",  // Ensure this is correct
+    migrations: {
+      // Ensure the correct relative path to the migrations directory
+      path: './db/migrations',
+    },
+    models: {
+      path: './db/models', // Adjust based on your project structure
+    }
   },
   PORT: process.env.DB_PORT,
   JWT_SECRET: process.env.JWT_SECRET,
