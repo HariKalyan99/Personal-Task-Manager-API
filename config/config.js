@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: `${process.cwd()}/.env` });
 
-const environment = process.env.NODE_ENV || 'production';
+const environment = process.env.NODE_ENV || 'development';
 
 const config = {
   [environment]: {
@@ -10,11 +10,11 @@ const config = {
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "postgres",
+    dialect: process.env.DB_DIALECT,
     seederStorage: "sequelize",
   },
   APP_PORT: process.env.APP_PORT,
-  NODE_ENV: process.env.NODE_ENV,
+  NODE_ENV: environment,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
