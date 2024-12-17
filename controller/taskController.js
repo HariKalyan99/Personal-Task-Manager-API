@@ -1,8 +1,7 @@
 const AppError = require("../middlewares/appError");
 const catchAsync = require("../middlewares/catchAsync");
-const task = require("../models/task");
-const Task = require('../services/task.services');
-const {allTasks, taskById, editTask, addNewTask} = new Task();
+const Task = require("../services/task.services");
+const { allTasks, taskById, editTask, deleteTask, addNewTask } = new Task();
 
 const getAllTask = catchAsync(async (request, response, _) => {
   const { priority, startDate, endDate, status } = request.query;
@@ -59,7 +58,7 @@ const updateTaskById = catchAsync(async (request, response, next) => {
   result.priority = body.priority;
   result.dueDate = body.dueDate;
   result.status = body.status;
-  
+
   const updatedResult = await result.save();
   return response.status(201).json({
     status: "success",
@@ -84,9 +83,8 @@ const deleteTaskById = catchAsync(async (request, response, next) => {
 
 const createTask = catchAsync(async (request, response, _) => {
   const existingUserId = request.user.id;
-  const newTask = await addNewTask({
-    ...request.body
-  }, existingUserId);
+  const newTask = await addNewTask({...request.body}, existingUserId);
+
   return response.status(201).json({
     status: "success",
     data: newTask,

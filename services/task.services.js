@@ -1,5 +1,5 @@
-const task = require("../models/task");
-const user = require("../models/user");
+const user = require("../db/models/user");
+const task = require("../db/models/task");
 
 class Task {
   allTasks = async (filter) => {

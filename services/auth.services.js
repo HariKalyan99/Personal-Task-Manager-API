@@ -1,4 +1,4 @@
-const user = require("../models/user");
+const user = require("../db/models/user");
 
 class Auth {
   userSignup = async (body) => {
