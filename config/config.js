@@ -1,17 +1,10 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: `${process.cwd()}/.env` });
 
+const environment = process.env.NODE_ENV || 'development';
+
 const config = {
-  development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres",
-    seederStorage: "sequelize",
-  },
-  production: {
+  [environment]: {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
