@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: `${process.cwd()}/.env` });
 
-const environment = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV || 'production';
 
 const config = {
   [environment]: {
