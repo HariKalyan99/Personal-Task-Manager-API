@@ -59,7 +59,7 @@ const updateTaskById = catchAsync(async (request, response, next) => {
   result.priority = body.priority;
   result.dueDate = body.dueDate;
   result.status = body.status;
-  result.userId = body.userId;
+  
   const updatedResult = await result.save();
   return response.status(201).json({
     status: "success",

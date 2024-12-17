@@ -60,7 +60,8 @@ const login = catchAsync(async (request, response, next) => {
   const result = await userLogin(email);
   const isVerifiedpasssword = await bcrypt.compare(password, result.password);
 
-  if (!result || !isVerifiedpasssword) {
+  const isPasswordVerified = await bcrypt.compare(password, result.password);
+  if (!result || !isPasswordVerified) {
     return next(new AppError("Invalid credentials", 400));
   } else {
     const token = generateToken({
@@ -70,4 +71,5 @@ const login = catchAsync(async (request, response, next) => {
   }
 });
 
+module.exports = { signUp, login };
 module.exports = { signUp, login };
