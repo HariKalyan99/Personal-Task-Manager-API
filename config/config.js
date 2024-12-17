@@ -12,6 +12,12 @@ const config = {
     port: process.env.DB_PORT,
     dialect: process.env.DB_DIALECT,
     seederStorage: "sequelize",
+    dialectOptions: environment === 'production' ? {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      }
+    } : {},
   },
   APP_PORT: process.env.APP_PORT,
   NODE_ENV: environment,
