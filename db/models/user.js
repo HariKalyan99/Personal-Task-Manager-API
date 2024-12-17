@@ -1,8 +1,6 @@
 "use strict";
 const { DataTypes } = require("sequelize");
-const bcrypt = require("bcrypt");
 const sequelize = require("../../connection/database");
-const AppError = require("../../middlewares/appError");
 const task = require("./task");
 
 const user = sequelize.define(
@@ -53,20 +51,6 @@ const user = sequelize.define(
         notEmpty: {
           msg: "password cannot be empty",
         },
-      },
-    },
-    confirmPassword: {
-      type: DataTypes.VIRTUAL,
-      set(value) {
-        if (this.password.length < 7) {
-          throw new AppError("Password length must be greater than 7", 400);
-        }
-        if (value === this.password) {
-          const hashedPassword = bcrypt.hashSync(value, 10);
-          this.setDataValue("password", hashedPassword);
-        } else {
-          throw new Error("Password and confirm password must be the same");
-        }
       },
     },
     createdAt: {

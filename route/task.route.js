@@ -1,5 +1,4 @@
 const express = require("express");
-const authentication = require("../middlewares/auth.middlewares");
 const {
   createTask,
   getAllTask,
@@ -7,6 +6,7 @@ const {
   updateTaskById,
   deleteTaskById,
 } = require("../controller/taskController");
+const authentication = require("../middlewares/auth.authentication");
 const router = express.Router();
 
 router.post("/tasks", authentication, createTask);
