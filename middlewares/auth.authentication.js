@@ -7,7 +7,7 @@ const authentication = catchAsync(async (request, _, next) => {
     let idToken = "";
     if (
       request.headers.authorization &&
-      request.headers.authorization.startsWith("Bearer")
+      request.headers.authorization.startsWith("Bearer") && request.cookies["remember_me"]
     ) {
       idToken = request.headers.authorization.split(" ")[1];
     }
