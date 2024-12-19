@@ -5,19 +5,10 @@ const AppError = require("../middlewares/appError");
 const config = require("../config/config");
 const Auth = require("../services/auth.services");
 const { userSignup, userLogin } = new Auth();
-const generateTokenAndSetCookies = (payload, response) => {
-  const token = jwt.sign(payload, config.JWT_SECRET, {
+const generateToken = (payload) => {
+  return token = jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
   });
-
-  response.cookie("remember_me", token, {
-    maxAge: 10*24*60*60*1000,
-    httpOnly: true,
-    samesite: "strict",
-    secure: process.env.NODE_ENV !== "development"
-})
-
-return token
 };
 
 const signUp = catchAsync(async (request, response, next) => {
@@ -50,9 +41,9 @@ const signUp = catchAsync(async (request, response, next) => {
   delete result.deletedAt;
   delete result.password;
 
-  generateTokenAndSetCookies({
+  generateToken({
     id: result.id,
-  }, response);
+  });
 
   return response.status(201).json({ status: "Success", data: result });
 });
@@ -67,15 +58,14 @@ const login = catchAsync(async (request, response, next) => {
   }
 
   const result = await userLogin(email);
-  const isVerifiedpasssword = await bcrypt.compare(password, result.password);
 
   const isPasswordVerified = await bcrypt.compare(password, result.password);
   if (!result || !isPasswordVerified) {
     return next(new AppError("Invalid credentials", 400));
   } else {
-    const token = generateTokenAndSetCookies({
+    const token = generateToken({
       id: result.id,
-    }, response);
+    });
     return response.status(201).json({ status: "Logged in", token });
   }
 });
