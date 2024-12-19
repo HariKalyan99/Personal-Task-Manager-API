@@ -5,17 +5,19 @@ const AppError = require("../middlewares/appError");
 const config = require("../config/config");
 const Auth = require("../services/auth.services");
 const { userSignup, userLogin } = new Auth();
-const generateToken = (payload, response) => {
+const generateTokenAndSetCookies = (payload, response) => {
   const token = jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
   });
 
-  return response.cookie("remember_me", token, {
+  response.cookie("remember_me", token, {
     maxAge: 10*24*60*60*1000,
     httpOnly: true,
     samesite: "strict",
     secure: process.env.NODE_ENV !== "development"
 })
+
+return token
 };
 
 const signUp = catchAsync(async (request, response, next) => {
@@ -48,7 +50,7 @@ const signUp = catchAsync(async (request, response, next) => {
   delete result.deletedAt;
   delete result.password;
 
-  generateToken({
+  generateTokenAndSetCookies({
     id: result.id,
   }, response);
 
@@ -71,10 +73,10 @@ const login = catchAsync(async (request, response, next) => {
   if (!result || !isPasswordVerified) {
     return next(new AppError("Invalid credentials", 400));
   } else {
-    generateToken({
+    const token = generateTokenAndSetCookies({
       id: result.id,
     }, response);
-    return response.status(201).json({ status: "Logged in" });
+    return response.status(201).json({ status: "Logged in", token });
   }
 });
 
