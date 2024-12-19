@@ -5,10 +5,17 @@ const AppError = require("../middlewares/appError");
 const config = require("../config/config");
 const Auth = require("../services/auth.services");
 const { userSignup, userLogin } = new Auth();
-const generateToken = (payload) => {
-  return jwt.sign(payload, config.JWT_SECRET, {
+const generateToken = (payload, response) => {
+  const token = jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
   });
+
+  return response.cookie("remember_me", token, {
+    maxAge: 10*24*60*60*1000,
+    httpOnly: true,
+    samesite: "strict",
+    secure: process.env.NODE_ENV !== "development"
+})
 };
 
 const signUp = catchAsync(async (request, response, next) => {
@@ -41,9 +48,9 @@ const signUp = catchAsync(async (request, response, next) => {
   delete result.deletedAt;
   delete result.password;
 
-  result.token = generateToken({
+  generateToken({
     id: result.id,
-  });
+  }, response);
 
   return response.status(201).json({ status: "Success", data: result });
 });
@@ -64,10 +71,10 @@ const login = catchAsync(async (request, response, next) => {
   if (!result || !isPasswordVerified) {
     return next(new AppError("Invalid credentials", 400));
   } else {
-    const token = generateToken({
+    generateToken({
       id: result.id,
-    });
-    return response.status(201).json({ status: "Logged in", token });
+    }, response);
+    return response.status(201).json({ status: "Logged in" });
   }
 });
 
