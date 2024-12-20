@@ -14,7 +14,7 @@ const generateToken = (payload) => {
 const signUp = catchAsync(async (request, response, next) => {
   const { username, email, password, confirmPassword } = request.body;
 
-  if (this.password.length < 7) {
+  if (password.length < 7) {
     return next(new AppError("Password length must be greater than 7", 400));
   }
 

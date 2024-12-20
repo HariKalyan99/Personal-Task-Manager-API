@@ -35,9 +35,11 @@ const getAllTask = catchAsync(async (request, response, _) => {
 const getTaskById = catchAsync(async (request, response, next) => {
   const existingUserId = request.user.id;
   const projectId = request.params.id;
+  console.log(existingUserId, projectId)
   const result = await taskById(projectId, existingUserId);
+  
   if (!result) {
-    return next(new AppError("Invalid project id", 400));
+    return next(new AppError("Invalid project id for the current user", 400));
   }
   return response.status(201).json({
     status: "success",
@@ -51,7 +53,7 @@ const updateTaskById = catchAsync(async (request, response, next) => {
   const body = request.body;
   const result = await editTask(projectId, existingUserId);
   if (!result) {
-    return next(new AppError("Invalid project id", 400));
+    return next(new AppError("Invalid project id for the current user", 400));
   }
   result.title = body.title;
   result.description = body.description;
@@ -71,7 +73,7 @@ const deleteTaskById = catchAsync(async (request, response, next) => {
   const projectId = request.params.id;
   const result = await deleteTask(projectId, existingUserId);
   if (!result) {
-    return next(new AppError("Invalid project id", 400));
+    return next(new AppError("Invalid project id for the current user", 400));
   }
 
   await result.destroy();
