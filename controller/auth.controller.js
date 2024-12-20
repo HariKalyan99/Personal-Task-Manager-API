@@ -66,7 +66,7 @@ const login = catchAsync(async (request, response, next) => {
     const token = generateToken({
       id: result.id,
     });
-    return response.status(201).json({ status: "Logged in", token });
+    return response.status(201).json({ status: "Logged in", token, user: result.username });
   }
 });
 
