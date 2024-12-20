@@ -5,7 +5,7 @@ const { allTasks, taskById, editTask, deleteTask, addNewTask } = new Task();
 
 const getAllTask = catchAsync(async (request, response, _) => {
   const { priority, startDate, endDate, status } = request.query;
-
+  const existingUserId = request.user.id;
   const filter = {};
 
   if (priority) {
@@ -25,7 +25,7 @@ const getAllTask = catchAsync(async (request, response, _) => {
       filter.dueDate.$lte = new Date(endDate);
     }
   }
-  const result = await allTasks(filter);
+  const result = await allTasks({...filter, userId: existingUserId});
   return response.status(201).json({
     status: "success",
     data: result,
@@ -35,7 +35,6 @@ const getAllTask = catchAsync(async (request, response, _) => {
 const getTaskById = catchAsync(async (request, response, next) => {
   const existingUserId = request.user.id;
   const projectId = request.params.id;
-  console.log(existingUserId, projectId)
   const result = await taskById(projectId, existingUserId);
   
   if (!result) {
