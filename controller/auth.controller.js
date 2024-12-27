@@ -45,7 +45,7 @@ const signUp = catchAsync(async (request, response, next) => {
     id: result.id,
   });
 
-  return response.status(201).json({ status: "Success", data: result });
+  return response.status(201).json({ message: "User registered" ,status: true, data: result });
 });
 
 const login = catchAsync(async (request, response, next) => {
@@ -66,7 +66,7 @@ const login = catchAsync(async (request, response, next) => {
     const token = generateToken({
       id: result.id,
     });
-    return response.status(201).json({ status: "Logged in", token, user: result.username });
+    return response.status(201).json({ message: "User Logged in" ,status: true, token, user: result.username });
   }
 });
 

@@ -27,7 +27,7 @@ const getAllTask = catchAsync(async (request, response, _) => {
   }
   const result = await allTasks({...filter, userId: existingUserId});
   return response.status(201).json({
-    status: "success",
+    status: true,
     data: result,
   });
 });
@@ -41,7 +41,7 @@ const getTaskById = catchAsync(async (request, response, next) => {
     return next(new AppError("Invalid project id for the current user", 400));
   }
   return response.status(201).json({
-    status: "success",
+    status: true,
     data: result,
   });
 });
@@ -62,7 +62,8 @@ const updateTaskById = catchAsync(async (request, response, next) => {
 
   const updatedResult = await result.save();
   return response.status(201).json({
-    status: "success",
+    status: true,
+    message: "Blog has been updated",
     data: updatedResult,
   });
 });
@@ -77,7 +78,8 @@ const deleteTaskById = catchAsync(async (request, response, next) => {
 
   await result.destroy();
   return response.status(201).json({
-    status: "success",
+    status: true,
+    message: "task deleted",
     data: "Task deleted successfully",
   });
 });
@@ -87,7 +89,8 @@ const createTask = catchAsync(async (request, response, _) => {
   const newTask = await addNewTask({...request.body}, existingUserId);
 
   return response.status(201).json({
-    status: "success",
+    status: true,
+    message: "Task created successfully",
     data: newTask,
   });
 });
