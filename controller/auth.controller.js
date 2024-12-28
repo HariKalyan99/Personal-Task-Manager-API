@@ -6,9 +6,9 @@ const config = require("../config/config");
 const Auth = require("../services/auth.services");
 const { userSignup, userLogin } = new Auth();
 const generateToken = (payload) => {
-  return token = jwt.sign(payload, config.JWT_SECRET, {
+  return (token = jwt.sign(payload, config.JWT_SECRET, {
     expiresIn: config.JWT_EXPIRES_IN,
-  });
+  }));
 };
 
 const signUp = catchAsync(async (request, response, next) => {
@@ -45,7 +45,9 @@ const signUp = catchAsync(async (request, response, next) => {
     id: result.id,
   });
 
-  return response.status(201).json({ message: "User registered" ,status: true, data: result });
+  return response
+    .status(201)
+    .json({ message: "User registered", status: true, data: result });
 });
 
 const login = catchAsync(async (request, response, next) => {
@@ -57,18 +59,30 @@ const login = catchAsync(async (request, response, next) => {
     );
   }
 
-  const result = await userLogin(email);
 
-  const isPasswordVerified = await bcrypt.compare(password, result.password);
-  if (!result || !isPasswordVerified) {
+  const result = await userLogin(email);
+  const isPasswordVerified = await bcrypt.compare(password, result?.password || "");
+  if (!result) {
     return next(new AppError("Invalid credentials", 400));
-  } else {
+  }
+  
+  if(!isPasswordVerified){
+    return next(new AppError("Invalid credentials", 400));
+  }
+
+  if(result && isPasswordVerified){
     const token = generateToken({
       id: result.id,
     });
-    return response.status(201).json({ message: "User Logged in" ,status: true, token, user: result.username });
+    return response
+      .status(201)
+      .json({
+        message: "User Logged in",
+        status: true,
+        token,
+        user: result.username,
+      });
   }
 });
 
-module.exports = { signUp, login };
 module.exports = { signUp, login };
