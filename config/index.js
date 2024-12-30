@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-dotenv.config({ path: `${process.cwd()}/.env` });
+dotenv.config();
 
 const {
   DB_USERNAME,
