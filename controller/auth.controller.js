@@ -1,88 +1,91 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const catchAsync = require("../middlewares/catchAsync");
-const AppError = require("../middlewares/appError");
-const config = require("../config/config");
-const Auth = require("../services/auth.services");
-const { userSignup, userLogin } = new Auth();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const config = require('../config');
+const {userLogin, userSignup} = require("../services/auth.services");
+
 const generateToken = (payload) => {
-  return (token = jwt.sign(payload, config.JWT_SECRET, {
-    expiresIn: config.JWT_EXPIRES_IN,
-  }));
+  return jwt.sign(payload, config.jwtsecret, {
+    expiresIn: config.jwtexpiresin,
+  });
 };
 
-const signUp = catchAsync(async (request, response, next) => {
+const signUp = async (request, response) => {
   const { username, email, password, confirmPassword } = request.body;
 
   if (password.length < 7) {
-    return next(new AppError("Password length must be greater than 7", 400));
+    return response
+      .status(400)
+      .json({ message: 'Password must be at least 7 characters long' });
   }
 
   if (password !== confirmPassword) {
-    return next(
-      new AppError("Password and confirm password must be the same", 400)
-    );
+    return response
+      .status(400)
+      .json({ message: 'Password and Confirm password must be the same' });
   }
 
-  const hashedPassword = bcrypt.hashSync(password, 10);
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await userSignup({
-    username,
-    email,
-    password: hashedPassword,
-    confirmPassword,
-  });
+    const newUser = await userSignup({
+      username,
+      email,
+      password: hashedPassword,
+      confirmPassword,
+    });
 
-  if (!newUser) {
-    return next(new AppError("Failed to create user", 400));
+    if (!newUser) {
+      return response.status(500).json({ message: 'Failed to create user' });
+    }
+
+    const result = newUser.toJSON();
+    return response.status(201).json({
+      message: 'User registered successfully',
+      status: true,
+      data: result,
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: 'Server error', error: error.message });
   }
+};
 
-  const result = newUser.toJSON();
-  delete result.deletedAt;
-  delete result.password;
-
-  generateToken({
-    id: result.id,
-  });
-
-  return response
-    .status(201)
-    .json({ message: "User registered", status: true, data: result });
-});
-
-const login = catchAsync(async (request, response, next) => {
+const login = async (request, response) => {
   const { email, password } = request.body;
 
   if (!email || !password) {
-    return next(
-      new AppError("Please provide email, password, confirm password", 400)
-    );
-  }
-
-
-  const result = await userLogin(email);
-  const isPasswordVerified = await bcrypt.compare(password, result?.password || "");
-  if (!result) {
-    return next(new AppError("Invalid credentials", 400));
-  }
-  
-  if(!isPasswordVerified){
-    return next(new AppError("Invalid credentials", 400));
-  }
-
-  if(result && isPasswordVerified){
-    const token = generateToken({
-      id: result.id,
-    });
     return response
-      .status(201)
-      .json({
-        message: "User Logged in",
-        status: true,
-        token,
-        user: result.username,
-      });
+      .status(400)
+      .json({ message: 'Please provide both email and password' });
   }
-});
+
+  try {
+    const result = await userLogin(email);
+
+    if (!result) {
+      return response.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const isPasswordVerified = await bcrypt.compare(password, result.password);
+
+    if (!isPasswordVerified) {
+      return response.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const token = generateToken({ id: result.id });
+
+    return response.status(200).json({
+      message: 'User logged in successfully',
+      status: true,
+      token,
+      user: result.username,
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ message: 'Server error', error: error.message });
+  }
+};
 
 module.exports = { signUp, login };

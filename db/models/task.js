@@ -1,6 +1,6 @@
 "use strict";
 const { DataTypes } = require("sequelize");
-const sequelize = require("../../connection/database");
+const sequelize = require("../../connection/connectToSQL");
 
 module.exports = sequelize.define(
   "task",

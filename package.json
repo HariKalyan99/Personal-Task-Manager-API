@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Task Management API built with Node.js, Express, and Sequelize ORM for handling tasks with the ability to filter by priority, due date, and status",
+  "description": "Task Management API built with Node.js, Express, and Sequelize ORM",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -21,6 +21,19 @@
     "sequelize": "^6.37.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
     "sequelize-cli": "^6.6.2"
   }
 }

@@ -1,33 +1,35 @@
-const express = require("express");
+const express = require('express');
 const cors = require('cors');
-const authRouter = require("./route/auth.route");
-const taskRouter = require("./route/task.route");
-const catchAsync = require("./middlewares/catchAsync");
-const AppError = require("./middlewares/appError");
-const globalErrorHandler = require("./controller/errorController");
-const sequelize = require("./connection/database");
-const config = require("./config/config");
-
-
-
-
+const authRouter = require('./route/auth.route');
+const taskRouter = require('./route/task.route');
+const globalErrorHandler = require('./controller/error.controller');
+const sequelize = require('./connection/connectToSQL');
+const config = require('./config');
 
 const app = express();
-const PORT = config.APP_PORT;
+const PORT = config.appport;
+// use cors methods
 app.use(cors());
 app.use(express.json());
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/", taskRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/', taskRouter);
 
+app.use(
+  '*',
+  async (request, response, next) => {
+    response
+      .status(404)
+      .json({ message: `Can't find ${request.originalUrl} on this server` });
+    next();
+  },
+  globalErrorHandler,
+);
 
-app.use("*", catchAsync(async(request, _, next) => {
-    throw new AppError(`Can't find ${request.originalUrl} on this server`, 404);
-}), globalErrorHandler)
-
-
-sequelize.authenticate().then(() => {
+sequelize
+  .authenticate()
+  .then(() => {
     app.listen(PORT, () => {
-        console.log(`listening on port ${PORT}`)
-    })
-}).catch(console.log)
-
+      console.log(`listening on port ${PORT}`);
+    });
+  })
+  .catch(console.log);

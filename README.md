@@ -2,16 +2,6 @@
 
 This is a Task Management API built with Node.js, Express, and Sequelize ORM for handling tasks with the ability to filter by priority, due date, and status.
 
-## Table of Contents
-
-- [Setup Instructions](#setup-instructions)
-- [API Documentation](#api-documentation)
-  - [Create Task](#create-task)
-  - [Get All Tasks](#get-all-tasks)
-- [Notes](#notes)
-
----
-
 ## Setup Instructions
 
 ### Prerequisites
@@ -34,7 +24,6 @@ cd Personal-Task-Manager-API
 ### Install Dependencies
 npm install
 
-
 # .env
 
 APP_PORT=""
@@ -47,14 +36,18 @@ DB_DATABASE=""
 DB_HOST=""
 DB_PORT=""
 
-#jwt 
+#jwt
 JWT_SECRET=""
 JWT_EXPIRES_IN=""
 
 # database
 
 npx sequelize-cli db:migrate
+npx sequelize-cli db:migrate:undo:all
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 
-npm start
+npm run dev
 
 enjoy!!!
+```

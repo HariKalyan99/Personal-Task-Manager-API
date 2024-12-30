@@ -1,31 +1,32 @@
-const config = require("../config/config");
+const config = require("../config");
 const user = require("../db/models/user");
-const AppError = require("./appError");
-const catchAsync = require("./catchAsync");
 const jwt = require("jsonwebtoken");
-const authentication = catchAsync(async (request, _, next) => {
-    let idToken = "";
-    if (
-      request.headers.authorization &&
-      request.headers.authorization.startsWith("Bearer")
-    ) {
-      idToken = request.headers.authorization.split(" ")[1];
-    }
+
+const authentication = async (request, response, next) => {
+  const authorizationHeader = request.headers.authorization;
+  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer")) {
+    return response.status(401).json({ error: "Please log in to get access" });
+  }
   
-    if (!idToken) {
-      return next(new AppError("Please log in get access", 401));
-    }
-  
-    const tokenDetail = jwt.verify(idToken, config.JWT_SECRET);
-  
-    const userExist = await user.findByPk(tokenDetail.id);
-  
+  const token = authorizationHeader.split(" ")[1];
+  if (!token) {
+    return response.status(401).json({ error: "Token missing. Please log in" });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, config.jwtsecret);
+    const userId = decodedToken.id;
+
+    const userExist = await user.findByPk(userId);
     if (!userExist) {
-      return next(new AppError("User no longer exists", 400));
+      return response.status(404).json({ error: "User no longer exists" });
     }
+
     request.user = userExist;
-    return next();
-  });
+    next();
+  } catch (error) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+};
 
-
-  module.exports = authentication
+module.exports = authentication;
