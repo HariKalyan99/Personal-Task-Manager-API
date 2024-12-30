@@ -10,7 +10,10 @@ const app = express();
 const PORT = config.appport;
 app.use(
   cors({
-    origin: "https://task-manger-fullstack.vercel.app",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://task-manger-fullstack.vercel.app"
+        : "*",
     credentials: true,
   }),
 );
@@ -19,16 +22,13 @@ app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/", taskRouter);
 
-app.use(
-  "*",
-  async (request, response, next) => {
-    response
-      .status(404)
-      .json({ message: `Can't find ${request.originalUrl} on the server` });
-    next();
-  },
-  globalErrorHandler,
-);
+app.use("*", (request, response) => {
+  return response
+    .status(404)
+    .json({ message: `Can't find ${request.originalUrl} on the server` });
+});
+
+app.use(globalErrorHandler);
 
 sequelize
   .authenticate()
