@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "dotenv": "^16.4.7",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-node": "^4.1.0",
@@ -33,7 +34,6 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "globals": "^15.14.0",
     "prettier": "^3.4.2",
-    "sequelize-cli": "^6.6.2",
-    "dotenv": "^16.4.7"
+    "sequelize-cli": "^6.6.2"
   }
 }
