@@ -8,10 +8,12 @@ const config = require("./config");
 
 const app = express();
 const PORT = config.appport;
-app.use(cors({
-  origin: 'https://task-manger-fullstack.vercel.app',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "https://task-manger-fullstack.vercel.app",
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
@@ -22,7 +24,7 @@ app.use(
   async (request, response, next) => {
     response
       .status(404)
-      .json({ message: `Can't find ${request.originalUrl} on this server` });
+      .json({ message: `Can't find ${request.originalUrl} on the server` });
     next();
   },
   globalErrorHandler,
