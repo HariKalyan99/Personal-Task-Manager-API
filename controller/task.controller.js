@@ -1,4 +1,11 @@
-const { allTasks, taskById, editTask, deleteTask, addNewTask } = require('../services/task.services');
+const logger = require("../logger");
+const {
+  allTasks,
+  taskById,
+  editTask,
+  deleteTask,
+  addNewTask,
+} = require("../services/task.services");
 
 const getAllTask = async (request, response) => {
   const { priority, startDate, endDate, status } = request.query;
@@ -25,12 +32,17 @@ const getAllTask = async (request, response) => {
 
   try {
     const result = await allTasks({ ...filter, userId: existingUserId });
+
+    logger.info("All the tasks have been found");
     return response.status(200).json({
       status: true,
       data: result,
     });
   } catch (error) {
-    return response.status(500).json({ message: 'Internal server error', error: error.message });
+    logger.error("Internal server error");
+    return response
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -42,15 +54,23 @@ const getTaskById = async (request, response) => {
     const result = await taskById(projectId, existingUserId);
 
     if (!result) {
-      return response.status(404).json({ message: 'Invalid project id for the current user' });
+      logger.warn("Invalid project id for the current user");
+      return response
+        .status(404)
+        .json({ message: "Invalid project id for the current user" });
     }
+
+    logger.warn("Found the task");
 
     return response.status(200).json({
       status: true,
       data: result,
     });
   } catch (error) {
-    return response.status(500).json({ message: 'Internal server error', error: error.message });
+    logger.error("Internal server error", error.message);
+    return response
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -63,7 +83,11 @@ const updateTaskById = async (request, response) => {
     const result = await editTask(projectId, existingUserId);
 
     if (!result) {
-      return response.status(404).json({ message: 'Invalid project id for the current user' });
+      logger.warn("Invalid project id for the current user");
+
+      return response
+        .status(404)
+        .json({ message: "Invalid project id for the current user" });
     }
 
     result.title = body.title;
@@ -73,14 +97,19 @@ const updateTaskById = async (request, response) => {
     result.status = body.status;
 
     const updatedResult = await result.save();
+    logger.info("Task updated successfully");
 
     return response.status(200).json({
       status: true,
-      message: 'Task has been updated',
+      message: "Task has been updated",
       data: updatedResult,
     });
   } catch (error) {
-    return response.status(500).json({ message: 'Internal server error', error: error.message });
+    logger.error("Internal server error", error.message);
+
+    return response
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -92,16 +121,26 @@ const deleteTaskById = async (request, response) => {
     const result = await deleteTask(projectId, existingUserId);
 
     if (!result) {
-      return response.status(404).json({ message: 'Invalid project id for the current user' });
+      logger.warn("Invalid project id for the current user");
+
+      return response
+        .status(404)
+        .json({ message: "Invalid project id for the current user" });
     }
 
     await result.destroy();
+    logger.info("Task deleted successfully");
+
     return response.status(200).json({
       status: true,
-      message: 'Task deleted successfully',
+      message: "Task deleted successfully",
     });
   } catch (error) {
-    return response.status(500).json({ message: 'Internal server error', error: error.message });
+    logger.error("Internal server error", error.message);
+
+    return response
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -110,30 +149,36 @@ const createTask = async (request, response) => {
 
   try {
     const newTask = await addNewTask({ ...request.body }, existingUserId);
+    logger.info("Task created successfully");
 
     return response.status(201).json({
       status: true,
-      message: 'Task created successfully',
+      message: "Task created successfully",
       data: newTask,
     });
   } catch (error) {
-    if (error.message.includes('invalid input syntax for type timestamp')) {
+    if (error.message.includes("invalid input syntax for type timestamp")) {
+      logger.error("Invalid date format. Please provide a valid date.");
+
       return response.status(400).json({
         status: false,
-        message: 'Invalid date format. Please provide a valid date.',
+        message: "Invalid date format. Please provide a valid date.",
       });
     }
 
-    if (error.message.includes('invalid input value for enum')) {
+    if (error.message.includes("invalid input value for enum")) {
+      logger.error("IInvalid value provided.");
+
       return response.status(400).json({
         status: false,
         message: `Invalid value provided. ${error.message}`,
       });
     }
+    logger.error("Internal server error", error.message);
 
     return response.status(500).json({
       status: false,
-      message: 'Internal server error',
+      message: "Internal server error",
       error: error.message,
     });
   }
